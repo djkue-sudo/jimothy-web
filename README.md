@@ -19,16 +19,14 @@ Nothing in this folder is secret. A CloudKit API token only works from the origi
 
 ## 1. CloudKit schema
 
-The page writes one field the Production schema doesn't have yet:
+The page writes one field added for it:
 
 | Record type | Field | Type | Index |
 |---|---|---|---|
 | `Player` | `selfReported` | `INT64` | none (it's never queried) |
 
 - **Development:** already imported (`cloudkit/schema.ckdb`). The before/after export differs only by this field.
-- **Production:** deploy it in CloudKit Console → Schema → Deploy Schema Changes. Check the diff shows only `Player.selfReported`.
-
-**Until that deploy is confirmed, keep `environment: "development"` in `js/config.js`.** On Production, every save from the page would be rejected until the field exists there.
+- **Production:** deployed on 2026-09-29. The Development and Production exports match.
 
 ## 2. CloudKit API token (one per environment)
 
