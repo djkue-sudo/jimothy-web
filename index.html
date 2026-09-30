@@ -87,8 +87,28 @@
           </div>
         </div>
         <ol id="board" class="board"></ol>
-        <p class="fine">Handicap compares everyone to their own usual. Until you've entered 14 days, yours is the crew's middle runner's.</p>
+        <button class="text-button info-link" id="handicap-info" type="button" aria-haspopup="dialog">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4.2M8 4.6v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          How Handicap works
+        </button>
       </section>
+
+      <dialog id="handicap-dialog" class="sheet dialog" aria-labelledby="handicap-title">
+        <h2 class="display" id="handicap-title">How Handicap works</h2>
+        <p class="yours" id="handicap-yours" hidden></p>
+        <!-- Same words as the app's HandicapCopy (Jimothy/Features/Board/HandicapExplainer.swift). -->
+        <h3 class="band">Your normal</h3>
+        <p>Your baseline is your average daily steps over the 4 weeks before this week, straight from Apple Health. Jimothy recalculates it every Monday, and it never goes below 3,000.</p>
+        <h3 class="band">Your score</h3>
+        <p>Your score is your steps so far divided by what your usual pace would have given you by now. 100% is your normal. 150% is half again as much as usual.</p>
+        <h3 class="band">Why it's fair</h3>
+        <p>Someone who usually walks 4,000 and does 6,000 is at 150%. Someone who usually walks 12,000 and does 13,000 is at 108%. The 150% wins: it's about beating your own normal, not everyone else's.</p>
+        <h3 class="band">Raw and the medals</h3>
+        <p>Raw shows plain step totals, biggest first. Crew Champ goes to the week's Handicap leader; Most Steps goes to the Raw leader.</p>
+        <h3 class="band">Typing steps in</h3>
+        <p>Runners who type their steps in use the crew's typical baseline until they have 14 days logged, so nobody tops the board just by being new.</p>
+        <form method="dialog"><button class="print-button" type="submit">Got it</button></form>
+      </dialog>
 
       <section class="receipts" aria-labelledby="days-title">
         <h2 class="band" id="days-title">Your days</h2>

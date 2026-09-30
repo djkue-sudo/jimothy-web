@@ -188,6 +188,8 @@ async function loadHome() {
     await loadCrew();
     renderHome();
     show("home");
+    // Mock only (localhost): `&explain` opens How Handicap works, for checking the dialog headlessly.
+    if (useMock && new URLSearchParams(location.search).has("explain")) $("handicap-info").click();
   } catch (error) {
     console.error(error);
     problem("Jimothy can't reach iCloud", "Check your connection and try again.");
@@ -378,6 +380,25 @@ $("mode").addEventListener("click", (event) => {
   if (!b) return;
   state.mode = b.dataset.mode;
   renderHome();
+});
+
+// How Handicap works, with your own normal and % on top.
+$("handicap-info").addEventListener("click", () => {
+  const today = todayKey();
+  const yours = $("handicap-yours");
+  const me = state.players.find((p) => p.id === state.myID) ?? state.me;
+  if (me) {
+    const baseline = Math.max(D.baselineForWeek(me, D.weekKeyForDay(today)) ?? me.baselineDailyAvg, D.BASELINE_FLOOR);
+    const window = D.competitionWindow(state.crew);
+    const finished = D.phase(window, today) === "finished";
+    const board = D.standings({ players: state.players, daySteps: state.daySteps, crew: state.crew, todayKey: today, metric: finished ? "overall" : "week", mode: "handicap" });
+    const mine = board.find((s) => s.player.id === state.myID);
+    yours.textContent = `Your normal: ${fmt(baseline)}/day` + (mine ? ` · you're at ${mine.percent}% ${finished ? "overall" : "this week"}` : "");
+    yours.hidden = false;
+  } else {
+    yours.hidden = true;
+  }
+  $("handicap-dialog").showModal();
 });
 
 $("refresh").addEventListener("click", loadHome);

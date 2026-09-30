@@ -251,6 +251,22 @@ input::placeholder { color: var(--text-secondary); }
 .marker { color: var(--text-secondary); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
 .icon { width: 14px; height: 14px; flex: none; }
 
+.info-link { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--s); padding-left: 0; }
+.info-link .icon { width: 18px; height: 18px; }
+.dialog {
+  width: min(440px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--l));
+  overflow-y: auto;
+  color: var(--text);
+  padding: var(--xl) var(--l);
+}
+/* .sheet sets display: flex, which would otherwise show the dialog while it's closed. */
+.dialog:not([open]) { display: none; }
+.dialog::backdrop { background: rgb(27 41 62 / 0.55); }
+.dialog .band { margin: var(--m) 0 0; }
+.dialog form { margin-top: var(--l); }
+.yours { font-family: var(--display); font-stretch: 62%; font-weight: 900; font-size: 22px; font-variant-numeric: tabular-nums; }
+
 .footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--m); margin-top: var(--xl); }
 .env { width: 100%; font-size: 13px; color: var(--text-secondary); }
 

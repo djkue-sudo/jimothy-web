@@ -53,6 +53,17 @@ for (const c of [...cast, guest]) {
 }
 
 const me = "p__webrunner";
+// `&joined` starts already on the crew, as a web runner with two entered days.
+if (params.has("joined")) {
+  const web = phone(me, "Kim", "🐸", 9800, 9200).player;
+  web.selfReported = true;
+  players.set(me, web);
+  memberships.add(me);
+  for (const [offset, steps] of [[0, 9200], [-1, 11500]]) {
+    const key = D.addDays(today, offset);
+    daySteps.set(`${me}_${key}`, { playerID: me, crewCode: code, dayKey: key, steps, baselineDailyAvg: 9800 });
+  }
+}
 const delay = () => new Promise((r) => setTimeout(r, 250));
 
 export async function setUp() {
