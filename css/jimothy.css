@@ -1,0 +1,263 @@
+/* Jimothy on the web: the app's design tokens (Jimothy/Design/Theme.swift), mobile first.
+   Riso Pink and Ink on Paper; pink text only at display sizes, Ink for everything small. */
+
+:root {
+  color-scheme: light dark;
+  /* Palette */
+  --riso-pink: #DA3870;
+  --ink: #1B293E;
+  --paper: #F2F3F6;
+  --blush: #E7C0D2;
+  /* Semantic, light */
+  --ground: #F2F3F6;
+  --surface: #FBFBFD;
+  --text: #1B293E;
+  --text-secondary: #57616F;
+  --accent: #DA3870;
+  --accent-text: #DA3870;
+  --on-accent: #F2F3F6;
+  --fill: #E7C0D2;
+  --rule: #1B293E;
+  --rule-soft: rgb(27 41 62 / 0.45);
+  --divider: rgb(27 41 62 / 0.3);
+  --offset-ink: #1B293E;
+  --dot-blank: #DCD5E0;
+  /* Type */
+  --display: "Archivo", "SF Pro Display", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Space, shape, print */
+  --s: 8px; --m: 12px; --l: 16px; --xl: 24px; --xxl: 36px;
+  --gutter: 16px;
+  --radius-card: 8px; --radius-control: 6px; --radius-key: 3px;
+  --hairline: 1px; --rule-width: 1.5px;
+  --misregistration: 3px;
+  --tap: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #1B293E;
+    --surface: #22324A;
+    --text: #F2F3F6;
+    --text-secondary: #B6BAC2;
+    --accent-text: #E8588A;
+    --fill: #3C3452;
+    --rule: #B6BAC2;
+    --rule-soft: rgb(182 186 194 / 0.45);
+    --divider: rgb(182 186 194 / 0.3);
+    --offset-ink: #0C1422;
+    --dot-blank: #3A4760;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font: 17px/1.4 var(--body);
+}
+::selection { background: var(--blush); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: max(var(--l), env(safe-area-inset-top)) var(--gutter) max(var(--xxl), env(safe-area-inset-bottom));
+}
+.screen { display: flex; flex-direction: column; gap: var(--l); }
+#loading, #problem { align-items: center; text-align: center; padding-top: 20vh; }
+
+/* Type */
+.display {
+  font-family: var(--display);
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: clamp(34px, 9vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.band {
+  font-family: var(--display);
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: var(--xl) 0 var(--s);
+}
+.quiet { color: var(--text-secondary); margin: 0; }
+.fine { color: var(--text-secondary); font-size: 13px; margin: 0; }
+.label { display: block; font-weight: 600; font-size: 15px; margin-bottom: var(--s); }
+p { margin: 0; }
+
+/* Art */
+.poster { width: 100%; height: auto; border-radius: var(--radius-card); border: var(--rule-width) solid var(--rule); box-shadow: var(--misregistration) var(--misregistration) 0 var(--accent); }
+.cutout { width: 120px; height: auto; }
+.sticker {
+  width: 88px; height: 88px; object-fit: contain;
+  background: var(--accent);
+  border: 4px solid var(--paper);
+  outline: var(--hairline) solid var(--accent);
+  border-radius: var(--radius-card);
+  transform: rotate(5deg);
+  padding: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  /* The ink halftone vanishes on Ink, as in the app: reprint the cutout as Paper. */
+  .cutout { filter: invert(1) brightness(1.4) grayscale(1); }
+}
+
+/* Printed sheet: surface, an ink rule and the hard 3pt second pass (SPEC §6). */
+.sheet {
+  background: var(--surface);
+  border: var(--rule-width) solid var(--rule);
+  border-radius: var(--radius-card);
+  box-shadow: var(--misregistration) var(--misregistration) 0 var(--accent);
+  padding: var(--l);
+  display: flex; flex-direction: column; gap: var(--m);
+}
+.banner {
+  border: var(--rule-width) solid var(--accent);
+  border-radius: var(--radius-control);
+  padding: var(--s) var(--m);
+  font-weight: 600;
+}
+
+/* Today */
+.monument-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s); }
+.monument {
+  font-family: var(--display);
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: clamp(72px, 24vw, 112px);
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  /* The pink second pass slipped off register, as on the poster. */
+  text-shadow: var(--misregistration) var(--misregistration) 0 var(--accent);
+}
+.fraction { display: flex; justify-content: space-between; gap: var(--s); flex-wrap: wrap; font-weight: 700; font-variant-numeric: tabular-nums; }
+.halftone {
+  height: 24px;
+  background-image: radial-gradient(circle, var(--dot-blank) 1.2px, transparent 1.5px);
+  background-size: 7px 7px;
+  position: relative;
+}
+.halftone span {
+  position: absolute; inset: 0 auto 0 0; width: 0;
+  background-image:
+    radial-gradient(circle, var(--text) 3.1px, transparent 3.4px),
+    radial-gradient(circle, var(--accent) 3.1px, transparent 3.4px);
+  background-size: 7px 7px;
+  background-position: 0 0, 1.5px 1.5px;
+  transition: width 0.55s ease-out;
+}
+
+/* Inputs and buttons */
+input {
+  font: 17px var(--body);
+  color: var(--text);
+  background: var(--surface);
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--radius-control);
+  padding: 0 var(--m);
+  min-height: var(--tap);
+  width: 100%;
+}
+input::placeholder { color: var(--text-secondary); }
+.field { border: 0; padding: 0; margin: 0 0 var(--l); }
+.entry { display: flex; gap: var(--s); }
+.print-button {
+  font-family: var(--display);
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: 19px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  min-height: 52px;
+  padding: 0 var(--l);
+  width: 100%;
+  color: var(--on-accent);
+  background: var(--accent);
+  border: var(--rule-width) solid var(--ink);
+  border-radius: var(--radius-control);
+  box-shadow: var(--misregistration) var(--misregistration) 0 var(--offset-ink);
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.print-button:active { transform: translate(var(--misregistration), var(--misregistration)); box-shadow: none; }
+.print-button:disabled { opacity: 0.55; cursor: default; }
+.print-button.small { width: auto; min-height: var(--tap); }
+.text-button { font: 600 17px var(--body); color: var(--text); background: none; border: 0; min-height: var(--tap); padding: 0 var(--s); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.problem { font-weight: 600; }
+.apple-button { min-height: var(--tap); }
+
+.emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s); }
+.emoji-grid button {
+  font-size: 28px; min-height: 52px;
+  background: var(--surface);
+  border: var(--hairline) solid var(--divider);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+.emoji-grid button[aria-checked="true"] { border: 2.5px solid var(--accent); }
+
+.crew-header { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--m); }
+.me { font-size: 28px; width: 52px; height: 52px; border-radius: 50%; background: var(--fill); border: var(--hairline) solid var(--rule); cursor: pointer; }
+
+/* Your days: a till-roll list */
+.days { list-style: none; margin: 0; padding: 0; }
+.days li { display: flex; align-items: center; gap: var(--s); min-height: var(--tap); border-bottom: var(--hairline) dashed var(--rule-soft); padding: var(--s) 0; }
+.days .day { flex: 1; font-weight: 600; }
+.days .value { font-family: var(--display); font-stretch: 62%; font-weight: 900; font-size: 22px; font-variant-numeric: tabular-nums; }
+.days input { width: 120px; }
+
+.earlier summary { min-height: var(--tap); display: flex; align-items: center; font-weight: 600; cursor: pointer; }
+
+/* Board: an open results sheet under an Ink rule */
+.controls { display: flex; flex-wrap: wrap; gap: var(--s); justify-content: space-between; margin-bottom: var(--m); }
+.segmented { display: inline-flex; background: var(--fill); border-radius: 999px; padding: 2px; }
+.segmented button {
+  font: 600 15px var(--body); color: var(--text);
+  background: none; border: 0; border-radius: 999px;
+  min-height: 36px; padding: 0 var(--m); cursor: pointer;
+}
+.segmented button[aria-selected="true"] { background: var(--text); color: var(--ground); }
+.board { list-style: none; margin: 0; padding: 0; border-top: var(--rule-width) solid var(--rule); }
+.row { display: grid; grid-template-columns: 44px 1fr auto; gap: var(--m); align-items: start; padding: var(--m) 0; border-bottom: var(--hairline) solid var(--divider); }
+.rank { font-family: var(--display); font-stretch: 62%; font-weight: 900; font-size: 34px; line-height: 1; }
+.who { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.name { font-weight: 800; font-stretch: 75%; font-family: var(--display); font-size: 19px; text-transform: uppercase; overflow-wrap: anywhere; }
+.name .emoji { font-size: 20px; margin-right: 6px; }
+.score { text-align: right; }
+.score .big { font-family: var(--display); font-stretch: 62%; font-weight: 900; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+.score .small { color: var(--text-secondary); font-size: 13px; font-variant-numeric: tabular-nums; }
+.row.you .rank, .row.you .name, .row.you .big { color: var(--accent-text); }
+.row.you .name { text-transform: none; font-size: 22px; font-weight: 900; font-stretch: 62%; }
+.tag {
+  align-self: flex-start;
+  font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 14px;
+  text-transform: uppercase;
+  color: var(--text);
+  border: var(--rule-width) solid var(--accent);
+  border-radius: var(--radius-control);
+  padding: 1px var(--s);
+}
+.marker { color: var(--text-secondary); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
+.icon { width: 14px; height: 14px; flex: none; }
+
+.footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--m); margin-top: var(--xl); }
+.env { width: 100%; font-size: 13px; color: var(--text-secondary); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bob { animation: bob 0.8s ease-in-out infinite alternate; }
+  @keyframes bob { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-6px) rotate(2deg); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .halftone span, .print-button { transition: none; }
+}

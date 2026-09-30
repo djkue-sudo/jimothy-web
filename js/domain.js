@@ -1,0 +1,330 @@
+// Jimothy's rules, ported from the iPhone app's Domain folder so a self-reported web runner's
+// records are indistinguishable from the app's own. Pure functions only: no CloudKit, no DOM.
+// Each block names the Swift type it mirrors; keep them in step.
+
+// MARK: Constants (Models.swift, Scoring.swift, GuestEntry.swift, CrewCode.swift)
+
+export const DAILY_GOAL_STANDARD = 8000;
+export const BASELINE_FLOOR = 3000;
+export const HISTORY_DAYS = 35;
+export const MAX_STEPS = 100000;
+export const MIN_BASELINE_DAYS = 14;
+export const MAX_NAME_LENGTH = 20;
+export const GUEST_PREFIX = "p_guest_";
+export const CREW_CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+export const CREW_CODE_LENGTH = 6;
+/** The runner emoji the app offers (RunnerPicker.choices). */
+export const RUNNER_EMOJI = ["🦝", "👟", "🔥", "🌱", "🐢", "😤", "🦊", "🐸", "🐙", "🦄", "🐝", "🌮"];
+
+// MARK: Crew codes (CrewCode.swift)
+
+/** Uppercases and drops anything outside the alphabet, capped at six characters. */
+export function sanitizeCrewCode(input) {
+  return [...String(input).toUpperCase()].filter((c) => CREW_CODE_ALPHABET.includes(c)).slice(0, CREW_CODE_LENGTH).join("");
+}
+
+export function isValidCrewCode(code) {
+  return code.length === CREW_CODE_LENGTH && [...code].every((c) => CREW_CODE_ALPHABET.includes(c));
+}
+
+// MARK: Calendar (CompetitionCalendar.swift)
+//
+// Days and weeks are measured in the crew's time zone, weeks start Monday (ISO 8601).
+// Day arithmetic works on calendar dates (UTC midnight stand-ins), so DST never shifts a day.
+
+function pad(n, width = 2) {
+  return String(n).padStart(width, "0");
+}
+
+/** The crew-time-zone calendar date of an instant, as {y, m, d}. */
+function zonedParts(date, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+  const get = (type) => Number(parts.find((p) => p.type === type).value);
+  return { y: get("year"), m: get("month"), d: get("day") };
+}
+
+function keyFromUTC(utc) {
+  return `${utc.getUTCFullYear()}-${pad(utc.getUTCMonth() + 1)}-${pad(utc.getUTCDate())}`;
+}
+
+function utcFromKey(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+/** `"2026-09-29"` for an instant, in the crew's time zone. */
+export function dayKey(date, timeZone) {
+  const { y, m, d } = zonedParts(date, timeZone);
+  return `${y}-${pad(m)}-${pad(d)}`;
+}
+
+/** The day key `days` after (or before) another. */
+export function addDays(key, days) {
+  const utc = utcFromKey(key);
+  utc.setUTCDate(utc.getUTCDate() + days);
+  return keyFromUTC(utc);
+}
+
+/** `"2026-W40"`: the ISO week of a day key. */
+export function weekKeyForDay(key) {
+  const utc = utcFromKey(key);
+  const weekday = utc.getUTCDay() || 7; // Monday 1 … Sunday 7
+  const thursday = new Date(utc);
+  thursday.setUTCDate(utc.getUTCDate() + 4 - weekday);
+  const year = thursday.getUTCFullYear();
+  const jan1 = Date.UTC(year, 0, 1);
+  const week = Math.ceil(((thursday - jan1) / 86400000 + 1) / 7);
+  return `${year}-W${pad(week)}`;
+}
+
+/** Monday of the week containing a day key. */
+export function mondayOf(key) {
+  const weekday = utcFromKey(key).getUTCDay() || 7;
+  return addDays(key, 1 - weekday);
+}
+
+/** Monday through Sunday of the week containing a day key. */
+export function weekDayKeys(key) {
+  const monday = mondayOf(key);
+  return [0, 1, 2, 3, 4, 5, 6].map((i) => addDays(monday, i));
+}
+
+/** 1 on Monday through 7 on Sunday. */
+export function daysElapsedInWeek(key) {
+  return utcFromKey(key).getUTCDay() || 7;
+}
+
+/** `count` consecutive day keys, oldest first, ending on `key`. */
+export function dayKeysEndingOn(key, count) {
+  return Array.from({ length: count }, (_, i) => addDays(key, i - count + 1));
+}
+
+/** The 28 day keys before the week containing `key`, oldest first: the baseline window. */
+export function baselineDayKeys(key) {
+  return dayKeysEndingOn(addDays(mondayOf(key), -1), 28);
+}
+
+// MARK: Competition window (CompetitionWindow.swift)
+
+export function competitionWindow(crew) {
+  const { startDayKey: start, endDayKey: end } = crew;
+  if (!start || !end || start > end) return null;
+  return { start, end };
+}
+
+export function phase(window, todayKey) {
+  if (!window) return null;
+  if (todayKey < window.start) return "warmUp";
+  if (todayKey > window.end) return "finished";
+  return "live";
+}
+
+export function windowDayKeys(window, throughKey) {
+  const keys = [];
+  for (let key = window.start, i = 0; key <= window.end && key <= throughKey && i < 400; key = addDays(key, 1), i++) keys.push(key);
+  return keys;
+}
+
+// MARK: Streaks and baselines (Scoring.swift)
+
+/** `steps` runs oldest to newest and ends today; today only extends the streak once the goal is met. */
+export function streaks(steps, goal) {
+  let best = 0;
+  let run = 0;
+  for (const value of steps) {
+    run = value >= goal ? run + 1 : 0;
+    best = Math.max(best, run);
+  }
+  let current = 0;
+  for (const value of steps.slice(0, -1).reverse()) {
+    if (value < goal) break;
+    current += 1;
+  }
+  if (steps.length && steps[steps.length - 1] >= goal) current += 1;
+  return { current, best };
+}
+
+/** Average daily steps over the 28 days before the week, floored at 3,000. Missing days count as zero. */
+export function baselineDailyAverage(stepsByDay, todayKey) {
+  const keys = baselineDayKeys(todayKey);
+  const total = keys.reduce((sum, key) => sum + (stepsByDay[key] ?? 0), 0);
+  return Math.max(Math.floor(total / keys.length), BASELINE_FLOOR);
+}
+
+/** MatchupEngine.median: the lower middle of the sorted values. */
+export function median(values) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.floor((sorted.length - 1) / 2)];
+}
+
+// MARK: Self-reported runners (Models.swift, GuestEntry.swift)
+
+/** Guests (entered by the crew's creator) and web runners both type their steps in. */
+export function isSelfReported(player) {
+  return player.id.startsWith(GUEST_PREFIX) || player.selfReported === true;
+}
+
+/** The median baseline of the crew's phone runners, for self-reported runners without enough history. */
+export function crewMedianBaseline(players) {
+  const baselines = players.filter((p) => !isSelfReported(p)).map((p) => p.baselineDailyAvg).filter((b) => b > 0);
+  return baselines.length ? median(baselines) : null;
+}
+
+/** The runner's 35-day history, oldest first, with one day replaced by the entered value. */
+export function historyTotals(existing, enteringSteps, onDayKey, todayKey) {
+  const byDay = {};
+  for (const day of existing) byDay[day.dayKey] = Math.max(byDay[day.dayKey] ?? 0, day.steps);
+  if (onDayKey != null) byDay[onDayKey] = clampSteps(enteringSteps);
+  return dayKeysEndingOn(todayKey, HISTORY_DAYS).map((key) => ({ dayKey: key, steps: byDay[key] ?? 0 }));
+}
+
+export function clampSteps(steps) {
+  const n = Math.floor(Number(steps));
+  return Number.isFinite(n) ? Math.min(Math.max(n, 0), MAX_STEPS) : 0;
+}
+
+/**
+ * Baselines are recomputed once per week; the old one shifts into the `prev` fields so last week's
+ * Handicap board can still be scored (PlayerSummary.rollBaseline).
+ */
+export function rollBaseline(current, previous, weekKey, fresh) {
+  const kept = previous ?? { avg: 0, weekKey: "" };
+  if (current && current.weekKey === weekKey) return { current, previous: kept };
+  const shifted = current && current.weekKey !== "" ? current : kept;
+  return { current: { avg: fresh(), weekKey }, previous: shifted };
+}
+
+/**
+ * The Player summary a web runner publishes after entering steps: PlayerSummary.build, then the guest
+ * rule that a runner with fewer than 14 entered days in the baseline window borrows the crew median.
+ * Self-reported runners never show "moved recently".
+ */
+export function buildSummary({ id, profile, crew, totals, previous, todayKey, now, crewMedian }) {
+  const weekKey = weekKeyForDay(todayKey);
+  const weekDays = new Set(weekDayKeys(todayKey));
+  const goal = crew.dailyGoal ?? profile.dailyGoal ?? DAILY_GOAL_STANDARD;
+  const streak = streaks(totals.map((t) => t.steps), goal);
+
+  const current = previous ? { avg: previous.baselineDailyAvg, weekKey: previous.baselineWeekKey } : null;
+  const prior = previous ? { avg: previous.prevBaselineDailyAvg, weekKey: previous.prevBaselineWeekKey } : null;
+  const stepsByDay = Object.fromEntries(totals.map((t) => [t.dayKey, t.steps]));
+  const baseline = rollBaseline(current, prior, weekKey, () => baselineDailyAverage(stepsByDay, todayKey));
+
+  const window = new Set(baselineDayKeys(todayKey));
+  const enteredDays = totals.filter((t) => window.has(t.dayKey) && t.steps > 0).length;
+  if (enteredDays < MIN_BASELINE_DAYS && crewMedian != null && baseline.current.weekKey === weekKey) {
+    baseline.current = { avg: Math.max(crewMedian, BASELINE_FLOOR), weekKey };
+  }
+
+  return {
+    id,
+    displayName: profile.displayName.slice(0, MAX_NAME_LENGTH),
+    avatarEmoji: profile.avatarEmoji,
+    dailyGoal: profile.dailyGoal ?? DAILY_GOAL_STANDARD,
+    crewCode: crew.code,
+    todayKey,
+    todaySteps: totals.find((t) => t.dayKey === todayKey)?.steps ?? 0,
+    weekKey,
+    weekSteps: totals.filter((t) => weekDays.has(t.dayKey)).reduce((sum, t) => sum + t.steps, 0),
+    weekDistanceM: 0,
+    currentStreak: streak.current,
+    bestStreak: Math.max(streak.best, previous?.bestStreak ?? 0),
+    baselineDailyAvg: baseline.current.avg,
+    baselineWeekKey: baseline.current.weekKey,
+    prevBaselineDailyAvg: baseline.previous.avg,
+    prevBaselineWeekKey: baseline.previous.weekKey,
+    lastActiveAt: null,
+    lastSyncedAt: now,
+    badgeIDs: previous?.badgeIDs ?? [],
+    selfReported: true,
+  };
+}
+
+/** The baseline that applied during `weekKey`, or null when neither stored baseline covers it. */
+export function baselineForWeek(player, weekKey) {
+  if (player.baselineWeekKey === weekKey) return player.baselineDailyAvg;
+  if (player.prevBaselineWeekKey === weekKey) return player.prevBaselineDailyAvg;
+  return null;
+}
+
+// MARK: Boards (Scoring.swift Leaderboard, CompetitionWindow.swift CompetitionScoring)
+
+/**
+ * Standings for the board, exactly as the app ranks them:
+ * - no window, warm-up: from Player summaries (stale summaries count as 0);
+ * - live or finished: from DaySteps over the window's days, each day using its own week's baseline.
+ * `metric` is "week" or "overall"; `mode` is "handicap" or "raw".
+ */
+export function standings({ players, daySteps, crew, todayKey, metric, mode }) {
+  const window = competitionWindow(crew);
+  const ph = phase(window, todayKey);
+  const inputs = {};
+
+  if (!window || ph === "warmUp") {
+    const weekKey = weekKeyForDay(todayKey);
+    const days = daysElapsedInWeek(todayKey);
+    for (const p of players) {
+      const steps = p.weekKey === weekKey ? p.weekSteps : 0;
+      inputs[p.id] = { steps, expected: Math.max(p.baselineDailyAvg, BASELINE_FLOOR) * days };
+    }
+  } else {
+    const keys = metric === "overall"
+      ? windowDayKeys(window, todayKey)
+      : weekDayKeys(todayKey).filter((k) => k >= window.start && k <= window.end && k <= todayKey);
+    const wanted = new Set(keys);
+    const byPlayer = {};
+    for (const d of daySteps) {
+      if (!wanted.has(d.dayKey)) continue;
+      (byPlayer[d.playerID] ??= {})[d.dayKey] = d;
+    }
+    for (const p of players) {
+      const days = byPlayer[p.id] ?? {};
+      let steps = 0;
+      let expected = 0;
+      for (const key of keys) {
+        const record = days[key];
+        steps += record?.steps ?? 0;
+        const stamped = record?.baselineDailyAvg > 0 ? record.baselineDailyAvg : null;
+        const raw = stamped ?? baselineForWeek(p, weekKeyForDay(key)) ?? p.baselineDailyAvg;
+        expected += Math.max(raw, BASELINE_FLOOR);
+      }
+      inputs[p.id] = { steps, expected };
+    }
+  }
+  return rank(players, inputs, mode);
+}
+
+/** Competition ranking: tied runners share a rank and the next rank skips (1, 1, 3). */
+export function rank(players, inputs, mode) {
+  const entries = players.map((player) => {
+    const input = inputs[player.id] ?? { steps: 0, expected: BASELINE_FLOOR };
+    return { player, steps: input.steps, expected: Math.max(input.expected, BASELINE_FLOOR) };
+  });
+  // Handicap compares exactly by cross-multiplying, never through rounded percentages.
+  const compare = (a, b) =>
+    mode === "raw" ? b.steps - a.steps : b.steps * a.expected - a.steps * b.expected;
+  const sorted = [...entries].sort((a, b) => compare(a, b) || a.player.displayName.localeCompare(b.player.displayName));
+
+  const result = [];
+  sorted.forEach((entry, i) => {
+    const tiedPrev = i > 0 && compare(sorted[i - 1], entry) === 0;
+    const tiedNext = i + 1 < sorted.length && compare(entry, sorted[i + 1]) === 0;
+    result.push({
+      player: entry.player,
+      rank: tiedPrev ? result[i - 1].rank : i + 1,
+      isTied: tiedPrev || tiedNext,
+      steps: entry.steps,
+      percent: mode === "raw" ? null : Math.round((entry.steps / entry.expected) * 100),
+    });
+  });
+  return result;
+}
+
+/** The days a web runner may enter: the competition so far, or the last 35 days when there's no window. */
+export function enterableDayKeys(crew, todayKey) {
+  const window = competitionWindow(crew);
+  if (!window) return dayKeysEndingOn(todayKey, HISTORY_DAYS).reverse();
+  const earliest = addDays(todayKey, -(HISTORY_DAYS - 1));
+  return windowDayKeys(window, todayKey).filter((k) => k >= earliest).reverse();
+}
