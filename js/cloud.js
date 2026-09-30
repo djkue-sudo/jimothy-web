@@ -91,6 +91,7 @@ function toCrew(record) {
     startDayKey: value(record, "startDayKey"),
     endDayKey: value(record, "endDayKey"),
     dailyGoal: value(record, "dailyGoal"),
+    handicapStrength: value(record, "handicapStrength"),
   };
 }
 

@@ -1,0 +1,717 @@
+{
+ "crew": {
+  "code": "K7Q2MX",
+  "name": "Fixture",
+  "timeZoneID": "America/Los_Angeles",
+  "createdBy": "p_wren",
+  "dailyGoal": 8000,
+  "startDayKey": "2026-10-01",
+  "endDayKey": "2026-10-31"
+ },
+ "todayKey": "2026-10-06",
+ "players": [
+  {
+   "id": "p_wren",
+   "displayName": "Wren",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 40000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 18000,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 18000,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": false
+  },
+  {
+   "id": "p_sol",
+   "displayName": "Sol",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 16000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 4000,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 4000,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": false
+  },
+  {
+   "id": "p_mo",
+   "displayName": "Mo",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 17000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 8000,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 8000,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": false
+  },
+  {
+   "id": "p_pia",
+   "displayName": "Pia",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 18000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 10000,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 10000,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": false
+  },
+  {
+   "id": "p_guest_gus",
+   "displayName": "Gus",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 16000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 0,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 0,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": false
+  },
+  {
+   "id": "p_rae",
+   "displayName": "Rae",
+   "avatarEmoji": "🦝",
+   "dailyGoal": 8000,
+   "crewCode": "K7Q2MX",
+   "todayKey": "2026-10-06",
+   "todaySteps": 0,
+   "weekKey": "2026-W41",
+   "weekSteps": 11000,
+   "weekDistanceM": 0,
+   "currentStreak": 0,
+   "bestStreak": 0,
+   "baselineDailyAvg": 2000,
+   "baselineWeekKey": "2026-W41",
+   "prevBaselineDailyAvg": 2000,
+   "prevBaselineWeekKey": "2026-W40",
+   "badgeIDs": [],
+   "selfReported": true
+  }
+ ],
+ "daySteps": [
+  {
+   "playerID": "p_wren",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 20000,
+   "baselineDailyAvg": 18000
+  },
+  {
+   "playerID": "p_wren",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 20000,
+   "baselineDailyAvg": 18000
+  },
+  {
+   "playerID": "p_sol",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 8000,
+   "baselineDailyAvg": 4000
+  },
+  {
+   "playerID": "p_sol",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 8000,
+   "baselineDailyAvg": 4000
+  },
+  {
+   "playerID": "p_mo",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 9000,
+   "baselineDailyAvg": 8000
+  },
+  {
+   "playerID": "p_mo",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 8000,
+   "baselineDailyAvg": 8000
+  },
+  {
+   "playerID": "p_pia",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 9000,
+   "baselineDailyAvg": 10000
+  },
+  {
+   "playerID": "p_pia",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 9000,
+   "baselineDailyAvg": 10000
+  },
+  {
+   "playerID": "p_guest_gus",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 10000,
+   "baselineDailyAvg": 0
+  },
+  {
+   "playerID": "p_guest_gus",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 6000,
+   "baselineDailyAvg": 0
+  },
+  {
+   "playerID": "p_rae",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-05",
+   "steps": 6000,
+   "baselineDailyAvg": 2000
+  },
+  {
+   "playerID": "p_rae",
+   "crewCode": "K7Q2MX",
+   "dayKey": "2026-10-06",
+   "steps": 5000,
+   "baselineDailyAvg": 2000
+  }
+ ],
+ "cases": [
+  {
+   "strength": 100,
+   "dates": true,
+   "metric": "week",
+   "expect": [
+    [
+     "p_sol",
+     1,
+     false,
+     16000,
+     8000,
+     200
+    ],
+    [
+     "p_rae",
+     2,
+     false,
+     11000,
+     6000,
+     183
+    ],
+    [
+     "p_wren",
+     3,
+     false,
+     40000,
+     36000,
+     111
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     5,
+     false,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_pia",
+     6,
+     false,
+     18000,
+     20000,
+     90
+    ]
+   ]
+  },
+  {
+   "strength": 100,
+   "dates": true,
+   "metric": "overall",
+   "expect": [
+    [
+     "p_sol",
+     1,
+     false,
+     16000,
+     24000,
+     67
+    ],
+    [
+     "p_rae",
+     2,
+     false,
+     11000,
+     18000,
+     61
+    ],
+    [
+     "p_wren",
+     3,
+     false,
+     40000,
+     108000,
+     37
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     48000,
+     35
+    ],
+    [
+     "p_guest_gus",
+     5,
+     false,
+     16000,
+     48000,
+     33
+    ],
+    [
+     "p_pia",
+     6,
+     false,
+     18000,
+     60000,
+     30
+    ]
+   ]
+  },
+  {
+   "strength": 100,
+   "dates": false,
+   "metric": "week",
+   "expect": [
+    [
+     "p_sol",
+     1,
+     false,
+     16000,
+     8000,
+     200
+    ],
+    [
+     "p_rae",
+     2,
+     false,
+     11000,
+     6000,
+     183
+    ],
+    [
+     "p_wren",
+     3,
+     false,
+     40000,
+     36000,
+     111
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     5,
+     false,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_pia",
+     6,
+     false,
+     18000,
+     20000,
+     90
+    ]
+   ]
+  },
+  {
+   "strength": 50,
+   "dates": true,
+   "metric": "week",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     26000,
+     154
+    ],
+    [
+     "p_sol",
+     2,
+     false,
+     16000,
+     12000,
+     133
+    ],
+    [
+     "p_rae",
+     3,
+     false,
+     11000,
+     10000,
+     110
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     5,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_pia",
+     5,
+     true,
+     18000,
+     18000,
+     100
+    ]
+   ]
+  },
+  {
+   "strength": 50,
+   "dates": true,
+   "metric": "overall",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     78000,
+     51
+    ],
+    [
+     "p_sol",
+     2,
+     false,
+     16000,
+     36000,
+     44
+    ],
+    [
+     "p_rae",
+     3,
+     false,
+     11000,
+     30000,
+     37
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     48000,
+     35
+    ],
+    [
+     "p_guest_gus",
+     5,
+     true,
+     16000,
+     48000,
+     33
+    ],
+    [
+     "p_pia",
+     5,
+     true,
+     18000,
+     54000,
+     33
+    ]
+   ]
+  },
+  {
+   "strength": 50,
+   "dates": false,
+   "metric": "week",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     26000,
+     154
+    ],
+    [
+     "p_sol",
+     2,
+     false,
+     16000,
+     12000,
+     133
+    ],
+    [
+     "p_rae",
+     3,
+     false,
+     11000,
+     10000,
+     110
+    ],
+    [
+     "p_mo",
+     4,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     5,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_pia",
+     5,
+     true,
+     18000,
+     18000,
+     100
+    ]
+   ]
+  },
+  {
+   "strength": 0,
+   "dates": true,
+   "metric": "week",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     16000,
+     250
+    ],
+    [
+     "p_pia",
+     2,
+     false,
+     18000,
+     16000,
+     113
+    ],
+    [
+     "p_mo",
+     3,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     4,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_sol",
+     4,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_rae",
+     6,
+     false,
+     11000,
+     16000,
+     69
+    ]
+   ]
+  },
+  {
+   "strength": 0,
+   "dates": true,
+   "metric": "overall",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     48000,
+     83
+    ],
+    [
+     "p_pia",
+     2,
+     false,
+     18000,
+     48000,
+     38
+    ],
+    [
+     "p_mo",
+     3,
+     false,
+     17000,
+     48000,
+     35
+    ],
+    [
+     "p_guest_gus",
+     4,
+     true,
+     16000,
+     48000,
+     33
+    ],
+    [
+     "p_sol",
+     4,
+     true,
+     16000,
+     48000,
+     33
+    ],
+    [
+     "p_rae",
+     6,
+     false,
+     11000,
+     48000,
+     23
+    ]
+   ]
+  },
+  {
+   "strength": 0,
+   "dates": false,
+   "metric": "week",
+   "expect": [
+    [
+     "p_wren",
+     1,
+     false,
+     40000,
+     16000,
+     250
+    ],
+    [
+     "p_pia",
+     2,
+     false,
+     18000,
+     16000,
+     113
+    ],
+    [
+     "p_mo",
+     3,
+     false,
+     17000,
+     16000,
+     106
+    ],
+    [
+     "p_guest_gus",
+     4,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_sol",
+     4,
+     true,
+     16000,
+     16000,
+     100
+    ],
+    [
+     "p_rae",
+     6,
+     false,
+     11000,
+     16000,
+     69
+    ]
+   ]
+  }
+ ]
+}

@@ -2,7 +2,7 @@
 
 A plain HTML/JS page so crew members without an iPhone (Android and so on) can play. They sign in with a free Apple ID, pick a name and emoji, join with the crew code, type in their daily steps, and see the Board (Handicap by default, Raw one tap away).
 
-They are full players. Their own iCloud account creates their `Player`, `Membership` and `DaySteps` records, so only they can edit them. `Player.selfReported = 1` marks them, and the app shows the same "Self-reported" marker it uses for guests. Handicap uses the crew's median baseline until they've entered 14 days, the same as guests.
+They are full players. Their own iCloud account creates their `Player`, `Membership` and `DaySteps` records, so only they can edit them. `Player.selfReported = 1` marks them, and the app shows the same "Self-reported" marker it uses for guests. Handicap uses the crew's median baseline until they've entered 14 days in the baseline window (the 4 weeks before the competition starts, or before this week in a crew without dates), the same as guests. They can enter any of the last 35 days, including days before the start, which count toward those 14 but never score.
 
 Nothing in this folder is secret. A CloudKit API token only works from the origins you allow for it, and only does what a signed-in visitor could do anyway.
 

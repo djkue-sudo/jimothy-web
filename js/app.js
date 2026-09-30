@@ -168,7 +168,11 @@ function dayKeysToLoad() {
     ...D.dayKeysEndingOn(today, D.HISTORY_DAYS),
   ]);
   const window = D.competitionWindow(state.crew);
-  if (window) for (const k of D.windowDayKeys(window, today)) keys.add(k);
+  if (window) {
+    for (const k of D.windowDayKeys(window, today)) keys.add(k);
+    // The locked baseline's 28 days, which fall out of the 35-day history late in a competition.
+    for (const k of D.lockDayKeys(window.start)) keys.add(k);
+  }
   return [...keys];
 }
 
@@ -202,7 +206,7 @@ const myDays = () => state.daySteps.filter((d) => d.playerID === state.myID);
 
 /**
  * Republishes your Player summary (and one day's steps, when entering), exactly as the app does for a
- * guest: 35 days of history, streaks, the weekly baseline roll and the crew-median rule.
+ * guest: 35 days of history, streaks, and your own baseline once 14 days are logged in its window.
  */
 async function publish({ profile, entering }) {
   const today = todayKey();
@@ -217,10 +221,10 @@ async function publish({ profile, entering }) {
     },
     crew: state.crew,
     totals,
+    entries: Object.fromEntries(myDays().map((d) => [d.dayKey, d.steps])),
     previous,
     todayKey: today,
     now: Date.now(),
-    crewMedian: D.crewMedianBaseline(state.players),
   });
   if (entering) {
     const steps = totals.find((t) => t.dayKey === entering.dayKey)?.steps ?? 0;
@@ -388,12 +392,18 @@ $("handicap-info").addEventListener("click", () => {
   const yours = $("handicap-yours");
   const me = state.players.find((p) => p.id === state.myID) ?? state.me;
   if (me) {
-    const baseline = Math.max(D.baselineForWeek(me, D.weekKeyForDay(today)) ?? me.baselineDailyAvg, D.BASELINE_FLOOR);
+    const rule = D.handicapRule(state.crew, state.players);
+    const own = D.baselineForWeek(me, D.weekKeyForDay(today)) ?? me.baselineDailyAvg;
+    const target = D.effectiveBaseline(rule, own);
+    let line = D.ownBaseline(own) == null
+      ? `Your normal: the crew's typical ${fmt(target)}/day`
+      : `Your normal: ${fmt(own)}/day` + (target !== own ? ` · target ${fmt(target)} at ${D.HANDICAP_STRENGTHS[rule.strength]}` : "");
     const window = D.competitionWindow(state.crew);
     const finished = D.phase(window, today) === "finished";
     const board = D.standings({ players: state.players, daySteps: state.daySteps, crew: state.crew, todayKey: today, metric: finished ? "overall" : "week", mode: "handicap" });
     const mine = board.find((s) => s.player.id === state.myID);
-    yours.textContent = `Your normal: ${fmt(baseline)}/day` + (mine ? ` · you're at ${mine.percent}% ${finished ? "overall" : "this week"}` : "");
+    if (mine) line += ` · you're at ${mine.percent}% ${finished ? "overall" : "this week"}`;
+    yours.textContent = line;
     yours.hidden = false;
   } else {
     yours.hidden = true;
