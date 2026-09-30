@@ -4,14 +4,14 @@
 export const CONFIG = {
   containerIdentifier: "iCloud.com.michaelmorales.Jimothy",
 
-  // Stay on Development until Player.selfReported is deployed to Production (web/README.md).
+  // Production: Player.selfReported is deployed there (web/README.md).
   // A `?env=development` or `?env=production` query overrides this for testing.
-  environment: "development",
+  environment: "production",
 
   // Paste each token from CloudKit Console → API Access → API Tokens.
   apiTokens: {
-    development: "",
-    production: "",
+    development: "d56b306f54450f98dd9ec1869162df89484bfb51d142f6549478b369d4072d7a",
+    production: "9a43dbdc12c549f29e1aecc9dd2a0f75042593203e0b4eb0e1777f26239445b6",
   },
 };
 
